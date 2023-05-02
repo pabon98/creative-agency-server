@@ -81,7 +81,7 @@ async function run() {
     });
     app.put("/makeAdmin", async (req, res) => {
       const filter = { email: req.body.email };
-      const result = await usersCollection.find(filter).toArray();
+      const result = await usersCollection.findOne(filter).toArray();
       if (result) {
         const documents = await usersCollection.updateOne(filter, {
           $set: { role: "admin" },
@@ -104,6 +104,13 @@ async function run() {
     res.send(result);
     console.log(result);
   });
+  //POST API
+  app.post("/services", async(req,res)=>{
+    const service = req.body
+    const result = await serviceCollection.insertOne(service)
+    console.log(result);
+    res.json(result)
+  })
     // check admin or not
     app.get("/checkAdmin/:email", async (req, res) => {
       const result = await usersCollection
