@@ -24,12 +24,13 @@ async function run() {
     const reviewCollection = database.collection("review");
     const usersCollection = database.collection("users");
 
-    //get cycle api
+    //get services api
     app.get("/services", async (req, res) => {
       const cursor = serviceCollection.find({});
       const services = await cursor.toArray();
       res.send(services);
     });
+    //GET API for get all services by id
     app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -44,7 +45,7 @@ async function run() {
       res.send(orders);
     });
 
-    // POST API
+    // POST API for posting the user's orders into database
     app.post("/placeOrder", async (req, res) => {
       const orderDetails = req.body;
       console.log(orderDetails);
@@ -60,25 +61,26 @@ async function run() {
       res.send(myOrders);
     });
 
-    // DELETE API
+    // DELETE API for deleting a single order
     app.delete("/deleteOrder/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await orderCollection.deleteOne(query);
       res.json(result);
     });
-    //GET Review API
+    //GET Review API for getting all the review
     app.get("/review", async (req, res) => {
       const cursor = reviewCollection.find({});
       const review = await cursor.toArray();
       res.send(review);
     });
-    // POST API(add a new review)
+    // POST API for adding a review to homepage
     app.post("/review", async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.json(result);
     });
+    //PUT method for make single user to admin
     app.put("/makeAdmin", async (req, res) => {
       const filter = { email: req.body.email };
       const result = await usersCollection.findOne(filter).toArray();
@@ -90,21 +92,21 @@ async function run() {
       }
       
     });
-    //add user
+    //add new user to database
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await usersCollection.insertOne(user);
       console.log(result);
       res.json(result);
     });
-
+ //POST API for posting firebase users into mongodb database
   app.post("/addUserInfo", async (req, res) => {
     console.log("req.body");
     const result = await usersCollection.insertOne(req.body);
     res.send(result);
     console.log(result);
   });
-  //POST API
+  //POST API for adding new service
   app.post("/services", async(req,res)=>{
     const service = req.body
     const result = await serviceCollection.insertOne(service)
@@ -126,7 +128,7 @@ async function run() {
       const result = await cycleCollection.deleteOne(query);
       res.json(result);
     });
-    // UPDATE API
+    // PUT API for approving the orders by admin
     app.put("/approve/:id", async (req, res) => {
       const id = req.params.id;
       const approvedOrder = req.body;
